@@ -7,7 +7,7 @@ from . import models
 
 # Create your views here.
 def task_list(request):
-    tasks = models.Task.objects.all().order_by('-created_at')
+    tasks = models.Task.objects.all().order_by('completed', '-created_at')
     return render(request, 'task/task_list.html', {'tasks': tasks})
 
 
@@ -70,3 +70,4 @@ def completed_tasks(request):
 def pending_tasks(request):
     tasks = models.Task.objects.filter(completed=False).order_by('-created_at')
     return render(request, 'task/pending_task.html', {'tasks': tasks})
+

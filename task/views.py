@@ -43,3 +43,13 @@ def delete_task(request, task_id):
         return redirect(reverse('task_list'))
 
     return render(request, 'task/delete_task.html', {'task': task})
+
+
+def completed_tasks(request):
+    tasks = models.Task.objects.filter(completed=True).order_by('-created_at')
+    return render(request, 'task/completed_task.html', {'tasks': tasks})
+
+
+def pending_tasks(request):
+    tasks = models.Task.objects.filter(completed=False).order_by('-created_at')
+    return render(request, 'task/pending_task.html', {'tasks': tasks})

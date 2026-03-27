@@ -1,0 +1,14 @@
+{% extends  'task/base.html' %}
+
+{% block title %}Add Task{% endblock %}
+
+{% block content %}
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add New Task</h2>
+    <div class="bg-white shadow-sm rounded-lg p-6">
+        <form method="post" action="{% url 'add_task' %}">
+            {% csrf_token %}
+           {{ form.as_p }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Task</button>
+        </form>
+    </div>
+{% endblock %}

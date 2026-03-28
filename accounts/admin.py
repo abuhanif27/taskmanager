@@ -3,6 +3,9 @@ from .models import CustomUser
 
 # Register your models here.
 
+CustomUser._meta.verbose_name = 'User'
+CustomUser._meta.verbose_name_plural = 'Users'
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):

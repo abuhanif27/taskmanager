@@ -11,15 +11,24 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-blue-600">Task Manager</h1>
+                    <a href="{% url 'task_list' %}" class="text-2xl font-bold text-blue-600">Task Manager</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="{% url 'task_list' %}" class="text-gray-600 hover:text-gray-900">Home</a>
-                    <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-gray-900">Admin</a>
-                    <a href="{% url 'add_task' %}" class="text-gray-600 hover:text-gray-900">Add Task</a>
-                    <a href="{% url 'completed_tasks' %}" class="text-gray-600 hover:text-gray-900">Completed Tasks</a>
-                    <a href="{% url 'pending_tasks' %}" class="text-gray-600 hover:text-gray-900">Pending Tasks</a>
-                    
+                    {% if user.is_authenticated %}
+                        <span class="text-sm text-gray-500">{{ user.email }}</span>
+                        <a href="{% url 'task_list' %}" class="text-gray-600 hover:text-gray-900">Home</a>
+                        <a href="{% url 'add_task' %}" class="text-gray-600 hover:text-gray-900">Add Task</a>
+                        <a href="{% url 'completed_tasks' %}" class="text-gray-600 hover:text-gray-900">Completed Tasks</a>
+                        <a href="{% url 'pending_tasks' %}" class="text-gray-600 hover:text-gray-900">Pending Tasks</a>
+                        <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-gray-900">Admin</a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-600 hover:text-gray-900">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-gray-900">Login</a>
+                        <a href="{% url 'signup' %}" class="text-gray-600 hover:text-gray-900">Sign Up</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

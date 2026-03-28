@@ -1,0 +1,40 @@
+{% extends 'task/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+        <h2 class="text-3xl font-bold text-gray-800">Welcome Back</h2>
+        <p class="mt-2 text-sm text-gray-500">Login to view and manage your tasks.</p>
+
+        {% if form.errors %}
+            <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                Invalid email or password. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post" class="mt-6 space-y-4" action="{% url 'login' %}">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ field.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition">
+                Login
+            </button>
+
+            <p class="text-sm text-gray-600 text-center">
+                New here?
+                <a href="{% url 'signup' %}" class="text-blue-600 hover:text-blue-700 font-medium">Create an account</a>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}

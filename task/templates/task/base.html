@@ -113,10 +113,11 @@
 
         <main class="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
             {% if messages %}
-                <div class="mb-6 space-y-3">
+                <div class="mb-6 space-y-3" id="messages-container">
                     {% for message in messages %}
-                        <div class="rounded-xl border px-4 py-3 text-sm font-semibold {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200{% elif message.tags == 'error' %}border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-200{% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200{% else %}border-brand-200 bg-brand-50 text-brand-800 dark:border-brand-900 dark:bg-brand-950/50 dark:text-brand-200{% endif %}">
-                            {{ message }}
+                        <div class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200{% elif message.tags == 'error' %}border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-200{% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200{% else %}border-brand-200 bg-brand-50 text-brand-800 dark:border-brand-900 dark:bg-brand-950/50 dark:text-brand-200{% endif %}" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="message-close ml-3 text-lg leading-none opacity-60 hover:opacity-100 transition" aria-label="Close message">×</button>
                         </div>
                     {% endfor %}
                 </div>
@@ -165,6 +166,20 @@
                     mobileMenu.classList.toggle('hidden');
                 });
             }
+
+            var closeButtons = document.querySelectorAll('.message-close');
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var messageDiv = button.closest('[role="alert"]');
+                    if (messageDiv) {
+                        messageDiv.remove();
+                        var container = document.getElementById('messages-container');
+                        if (container && container.children.length === 0) {
+                            container.remove();
+                        }
+                    }
+                });
+            });
         })();
     </script>
 </body>

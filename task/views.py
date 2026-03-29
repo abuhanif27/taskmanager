@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -7,9 +8,27 @@ from . import models
 
 # Create your views here.
 
+
+def paginate_tasks(request, queryset, per_page=10):
+    paginator = Paginator(queryset, per_page)
+    page_param = request.GET.get('page', '1')
+
+    try:
+        page_number = int(page_param)
+    except (TypeError, ValueError):
+        page_number = 1
+
+    if page_number < 1:
+        page_number = 1
+    elif page_number > paginator.num_pages:
+        page_number = paginator.num_pages
+
+    return paginator.page(page_number)
+
 @login_required
 def task_list(request):
-    tasks = models.Task.objects.filter(user=request.user).order_by('completed', '-created_at')
+    task_queryset = models.Task.objects.filter(user=request.user).order_by('completed', '-created_at')
+    tasks = paginate_tasks(request, task_queryset)
     return render(request, 'task/task_list.html', {'tasks': tasks})
 
 @login_required
@@ -71,11 +90,13 @@ def delete_task(request, task_id):
 
 @login_required
 def completed_tasks(request):
-    tasks = models.Task.objects.filter(user=request.user, completed=True).order_by('-created_at')
+    task_queryset = models.Task.objects.filter(user=request.user, completed=True).order_by('-created_at')
+    tasks = paginate_tasks(request, task_queryset)
     return render(request, 'task/completed_task.html', {'tasks': tasks})
 
 
 @login_required
 def pending_tasks(request):
-    tasks = models.Task.objects.filter(user=request.user, completed=False).order_by('-created_at')
+    task_queryset = models.Task.objects.filter(user=request.user, completed=False).order_by('-created_at')
+    tasks = paginate_tasks(request, task_queryset)
     return render(request, 'task/pending_task.html', {'tasks': tasks})

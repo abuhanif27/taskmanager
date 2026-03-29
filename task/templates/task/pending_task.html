@@ -30,6 +30,22 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            {% if tasks.has_other_pages %}
+                <div class="mt-6 flex items-center justify-between border-t pt-4">
+                    <div>
+                        {% if tasks.has_previous %}
+                            <a href="?page={{ tasks.previous_page_number }}" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm rounded-md transition">Previous</a>
+                        {% endif %}
+                    </div>
+                    <p class="text-sm text-gray-600">Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}</p>
+                    <div>
+                        {% if tasks.has_next %}
+                            <a href="?page={{ tasks.next_page_number }}" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm rounded-md transition">Next</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         {% else %}
             <p class="text-gray-600">No tasks found.</p>
         {% endif %}

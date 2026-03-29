@@ -68,19 +68,33 @@
             </ul>
 
             {% if tasks.has_other_pages %}
-                <div class="mt-6 flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300 sm:flex-row">
-                    <div>
-                        {% if tasks.has_previous %}
-                            <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ tasks.previous_page_number }}" class="inline-flex rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Previous</a>
-                        {% endif %}
+                <nav class="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
+                    {% if tasks.has_previous %}
+                        <a href="?{% if querystring %}{{ querystring }}&{% endif %}page=1" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800" title="First page">«</a>
+                        <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ tasks.previous_page_number }}" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800" title="Previous page">‹</a>
+                    {% else %}
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-300 dark:border-slate-800 dark:text-slate-600">«</span>
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-300 dark:border-slate-800 dark:text-slate-600">‹</span>
+                    {% endif %}
+
+                    <div class="flex items-center gap-1">
+                        {% for num in tasks.paginator.page_range %}
+                            {% if num == tasks.number %}
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600 text-sm font-semibold text-white">{{ num }}</span>
+                            {% elif num > tasks.number|add:'-3' and num < tasks.number|add:'3' %}
+                                <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ num }}" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 transition hover:border-brand-300 hover:bg-brand-50 dark:border-slate-800 dark:text-slate-300 dark:hover:border-brand-700 dark:hover:bg-brand-950">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                    <p class="font-semibold">Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}</p>
-                    <div>
-                        {% if tasks.has_next %}
-                            <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ tasks.next_page_number }}" class="inline-flex rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Next</a>
-                        {% endif %}
-                    </div>
-                </div>
+
+                    {% if tasks.has_next %}
+                        <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ tasks.next_page_number }}" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800" title="Next page">›</a>
+                        <a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ tasks.paginator.num_pages }}" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800" title="Last page">»</a>
+                    {% else %}
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-300 dark:border-slate-800 dark:text-slate-600">›</span>
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-300 dark:border-slate-800 dark:text-slate-600">»</span>
+                    {% endif %}
+                </nav>
             {% endif %}
         {% else %}
             <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center dark:border-slate-700 dark:bg-slate-900/80">

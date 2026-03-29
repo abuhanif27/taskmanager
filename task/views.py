@@ -10,7 +10,7 @@ from . import models
 # Create your views here.
 
 
-def paginate_tasks(request, queryset, per_page=10):
+def paginate_tasks(request, queryset, per_page=1):
     paginator = Paginator(queryset, per_page)
     page_param = request.GET.get('page', '1')
 

@@ -44,3 +44,35 @@ App runs at: http://127.0.0.1:8000/
 - `/tasks/completed/` completed tasks
 - `/tasks/pending/` pending tasks
 - `/admin/` Django admin
+
+## Screenshots
+
+### Login
+![Login](docs/screenshots/login-page.png)
+
+### Signup
+![Signup](docs/screenshots/signup-page.png)
+
+### Task List
+![Task List](docs/screenshots/task-list.png)
+
+### Edit Task
+![Edit Task](docs/screenshots/edit-task.png)
+
+### Delete Task
+![Delete Task](docs/screenshots/delete-task.png)
+
+### Completed Tasks
+![Completed Tasks](docs/screenshots/completed-task.png)
+
+### Pending Tasks
+![Pending Tasks](docs/screenshots/pending-task.png)
+
+### Admin Dashboard
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+
+### Admin Users
+![Admin Users](docs/screenshots/admin-users.png)
+
+### Admin Tasks
+![Admin Tasks](docs/screenshots/admin-tasks.png)

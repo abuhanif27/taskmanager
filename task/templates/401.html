@@ -1,0 +1,9 @@
+{% extends 'error_base.html' %}
+
+{% block error_title %}401 Unauthorized{% endblock %}
+{% block error_code %}401{% endblock %}
+{% block error_heading %}Unauthorized{% endblock %}
+{% block error_message %}Authentication is required to access this resource.{% endblock %}
+{% block error_action %}
+<a href="{% url 'login' %}" class="inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 transition">Go to Login</a>
+{% endblock %}

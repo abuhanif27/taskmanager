@@ -8,19 +8,19 @@ class TaskForm(forms.ModelForm):
         fields = ['title', 'description', 'category', 'completed']
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500',
                 'placeholder': 'Enter task title'
             }),
             'description': forms.Textarea(attrs={
-                'class': 'w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500',
                 'placeholder': 'Enter task description',
                 'rows': 4
             }),
             'category': forms.Select(attrs={
-                'class': 'w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100'
             }),
             'completed': forms.CheckboxInput(attrs={
-                'class': 'w-4 h-4 mb-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500'
+                'class': 'h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-2 focus:ring-brand-400 dark:border-slate-700 dark:bg-slate-900'
             })
         }
 
@@ -42,7 +42,7 @@ class TaskFilterForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Search title or description',
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500',
             }
         ),
     )
@@ -51,7 +51,7 @@ class TaskFilterForm(forms.Form):
         choices=STATUS_CHOICES,
         widget=forms.Select(
             attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100',
             }
         ),
     )
@@ -60,7 +60,7 @@ class TaskFilterForm(forms.Form):
         choices=(),
         widget=forms.Select(
             attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'class': 'w-full rounded-xl border border-slate-300 bg-white/90 px-4 py-2.5 text-slate-900 shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100',
             }
         ),
     )

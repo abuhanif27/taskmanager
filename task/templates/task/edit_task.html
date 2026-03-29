@@ -3,12 +3,33 @@
 {% block title %}Edit Task '{{ task.title }}'{% endblock %}
 
 {% block content %}
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Task '{{ task.title }}'</h2>
-    <div class="bg-white shadow-sm rounded-lg p-6">
-        <form method="post" action="{% url 'edit_task' task.id %}">
+    <section class="mx-auto max-w-3xl rounded-2xl border border-slate-200/80 bg-white/85 p-5 shadow-xl shadow-slate-200/40 backdrop-blur dark:border-slate-800 dark:bg-slate-900/70 dark:shadow-slate-900/20 sm:p-8">
+        <h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white">Edit Task</h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Updating: <span class="font-semibold">{{ task.title }}</span></p>
+
+        <form method="post" action="{% url 'edit_task' task.id %}" class="mt-6 space-y-5">
             {% csrf_token %}
-           {{ form.as_p }}
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Task</button>
+            {% for field in form %}
+                {% if field.name == 'completed' %}
+                    <label for="{{ field.id_for_label }}" class="flex items-center gap-3 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200">
+                        {{ field }}
+                        Mark as completed
+                    </label>
+                {% else %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-200">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endif %}
+                {% if field.errors %}
+                    <p class="text-sm text-rose-600 dark:text-rose-300">{{ field.errors|striptags }}</p>
+                {% endif %}
+            {% endfor %}
+
+            <div class="flex flex-col gap-2 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">Update Task</button>
+                <a href="{% url 'task_list' %}" class="inline-flex items-center justify-center rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Cancel</a>
+            </div>
         </form>
-    </div>
+    </section>
 {% endblock %}

@@ -27,10 +27,6 @@ def paginate_tasks(request, queryset, per_page=10):
     return paginator.page(page_number)
 
 
-def get_task_base_queryset(user):
-    return models.Task.objects.filter(user=user).order_by('completed', '-created_at')
-
-
 def apply_task_filters(queryset, query, status, category):
     if query:
         queryset = queryset.filter(Q(title__icontains=query) | Q(description__icontains=query))
@@ -45,8 +41,8 @@ def apply_task_filters(queryset, query, status, category):
 
     return queryset
 
-
-def build_task_list_context(request):
+@login_required
+def task_list(request):
     filter_form = TaskFilterForm(request.GET or None)
 
     if filter_form.is_valid():
@@ -59,24 +55,20 @@ def build_task_list_context(request):
         category = ''
         filter_form = TaskFilterForm(initial={'status': TaskFilterForm.STATUS_ALL})
 
-    queryset = get_task_base_queryset(request.user)
+    queryset = models.Task.objects.filter(user=request.user).order_by('completed', '-created_at')
     queryset = apply_task_filters(queryset, query=query, status=status, category=category)
     tasks = paginate_tasks(request, queryset)
 
     query_params = request.GET.copy()
     query_params.pop('page', None)
 
-    return {
+    context = {
         'tasks': tasks,
         'heading': 'All Tasks',
         'filter_form': filter_form,
         'querystring': query_params.urlencode(),
         'reset_url': request.path,
     }
-
-@login_required
-def task_list(request):
-    context = build_task_list_context(request)
     return render(request, 'task/task_list.html', context)
 
 @login_required

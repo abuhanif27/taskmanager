@@ -108,8 +108,11 @@ class TaskListFilteringTests(TaskTestBase):
 		self.assertContains(response, 'Morning run')
 		self.assertContains(response, 'Read design patterns')
 
-	def test_completed_scope_with_pending_filter_returns_empty_list(self):
-		response = self.client.get(reverse('completed_tasks'), {'status': 'pending'})
+	def test_conflicting_filters_return_empty_list(self):
+		response = self.client.get(
+			reverse('task_list'),
+			{'status': 'completed', 'category': Task.Category.STUDY},
+		)
 
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, 'No tasks found.')

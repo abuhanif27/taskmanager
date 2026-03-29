@@ -27,13 +27,8 @@ def paginate_tasks(request, queryset, per_page=10):
     return paginator.page(page_number)
 
 
-def get_task_base_queryset(user, scope=None):
-    queryset = models.Task.objects.filter(user=user)
-    if scope == TaskFilterForm.STATUS_COMPLETED:
-        queryset = queryset.filter(completed=True)
-    elif scope == TaskFilterForm.STATUS_PENDING:
-        queryset = queryset.filter(completed=False)
-    return queryset.order_by('completed', '-created_at')
+def get_task_base_queryset(user):
+    return models.Task.objects.filter(user=user).order_by('completed', '-created_at')
 
 
 def apply_task_filters(queryset, query, status, category):
@@ -51,7 +46,7 @@ def apply_task_filters(queryset, query, status, category):
     return queryset
 
 
-def build_task_list_context(request, scope, heading):
+def build_task_list_context(request):
     filter_form = TaskFilterForm(request.GET or None)
 
     if filter_form.is_valid():
@@ -64,7 +59,7 @@ def build_task_list_context(request, scope, heading):
         category = ''
         filter_form = TaskFilterForm(initial={'status': TaskFilterForm.STATUS_ALL})
 
-    queryset = get_task_base_queryset(request.user, scope=scope)
+    queryset = get_task_base_queryset(request.user)
     queryset = apply_task_filters(queryset, query=query, status=status, category=category)
     tasks = paginate_tasks(request, queryset)
 
@@ -73,18 +68,15 @@ def build_task_list_context(request, scope, heading):
 
     return {
         'tasks': tasks,
-        'heading': heading,
+        'heading': 'All Tasks',
         'filter_form': filter_form,
-        'active_status': status,
-        'active_category': category,
-        'search_query': query,
         'querystring': query_params.urlencode(),
         'reset_url': request.path,
     }
 
 @login_required
 def task_list(request):
-    context = build_task_list_context(request, scope=None, heading='All Tasks')
+    context = build_task_list_context(request)
     return render(request, 'task/task_list.html', context)
 
 @login_required
@@ -142,15 +134,3 @@ def delete_task(request, task_id):
         return redirect(reverse('task_list'))
     
     return render(request,'task/delete_task.html',{'task': task})
-
-
-@login_required
-def completed_tasks(request):
-    context = build_task_list_context(request, scope=TaskFilterForm.STATUS_COMPLETED, heading='Completed Tasks')
-    return render(request, 'task/task_list.html', context)
-
-
-@login_required
-def pending_tasks(request):
-    context = build_task_list_context(request, scope=TaskFilterForm.STATUS_PENDING, heading='Pending Tasks')
-    return render(request, 'task/task_list.html', context)

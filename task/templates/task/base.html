@@ -50,6 +50,44 @@
             }
         }
     </script>
+    <style>
+        @media (prefers-reduced-motion: no-preference) {
+            .page-enter {
+                animation: page-enter 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+
+            .reveal {
+                opacity: 0;
+                transform: translateY(10px);
+                animation: reveal-up 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
+
+            .stagger-list > * {
+                opacity: 0;
+                transform: translateY(10px) scale(0.995);
+                animation: reveal-up 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
+
+            .stagger-list > *:nth-child(1) { animation-delay: 60ms; }
+            .stagger-list > *:nth-child(2) { animation-delay: 100ms; }
+            .stagger-list > *:nth-child(3) { animation-delay: 140ms; }
+            .stagger-list > *:nth-child(4) { animation-delay: 180ms; }
+            .stagger-list > *:nth-child(5) { animation-delay: 220ms; }
+            .stagger-list > *:nth-child(6) { animation-delay: 260ms; }
+        }
+
+        @keyframes page-enter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes reveal-up {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
 </head>
 <body class="h-full bg-slate-100 text-slate-900 antialiased transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -115,7 +153,7 @@
             </div>
         </header>
 
-        <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main class="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
             {% if messages %}
                 <div class="mb-6 space-y-3">
                     {% for message in messages %}
@@ -125,7 +163,9 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            {% block content %}{% endblock %}
+            <div class="page-enter">
+                {% block content %}{% endblock %}
+            </div>
         </main>
 
         <footer class="border-t border-slate-200/80 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
@@ -146,10 +186,17 @@
             var mobileMenuButton = document.getElementById('mobile-menu-toggle');
             var mobileMenu = document.getElementById('mobile-menu');
 
+            function applyColorScheme(isDark) {
+                root.style.colorScheme = isDark ? 'dark' : 'light';
+            }
+
             function toggleTheme() {
                 var isDark = root.classList.toggle('dark');
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                applyColorScheme(isDark);
             }
+
+            applyColorScheme(root.classList.contains('dark'));
 
             toggleButtons.forEach(function (button) {
                 if (button) {

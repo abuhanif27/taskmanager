@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .forms import TaskForm
+from .forms import TaskFilterForm, TaskForm
 from . import models
 
 # Create your views here.
@@ -25,11 +26,66 @@ def paginate_tasks(request, queryset, per_page=10):
 
     return paginator.page(page_number)
 
+
+def get_task_base_queryset(user, scope=None):
+    queryset = models.Task.objects.filter(user=user)
+    if scope == TaskFilterForm.STATUS_COMPLETED:
+        queryset = queryset.filter(completed=True)
+    elif scope == TaskFilterForm.STATUS_PENDING:
+        queryset = queryset.filter(completed=False)
+    return queryset.order_by('completed', '-created_at')
+
+
+def apply_task_filters(queryset, query, status, category):
+    if query:
+        queryset = queryset.filter(Q(title__icontains=query) | Q(description__icontains=query))
+
+    if status == TaskFilterForm.STATUS_COMPLETED:
+        queryset = queryset.filter(completed=True)
+    elif status == TaskFilterForm.STATUS_PENDING:
+        queryset = queryset.filter(completed=False)
+
+    if category:
+        queryset = queryset.filter(category=category)
+
+    return queryset
+
+
+def build_task_list_context(request, scope, heading):
+    filter_form = TaskFilterForm(request.GET or None)
+
+    if filter_form.is_valid():
+        query = filter_form.cleaned_data['query']
+        status = filter_form.cleaned_data['status'] or TaskFilterForm.STATUS_ALL
+        category = filter_form.cleaned_data['category']
+    else:
+        query = ''
+        status = TaskFilterForm.STATUS_ALL
+        category = ''
+        filter_form = TaskFilterForm(initial={'status': TaskFilterForm.STATUS_ALL})
+
+    queryset = get_task_base_queryset(request.user, scope=scope)
+    queryset = apply_task_filters(queryset, query=query, status=status, category=category)
+    tasks = paginate_tasks(request, queryset)
+
+    query_params = request.GET.copy()
+    query_params.pop('page', None)
+
+    return {
+        'tasks': tasks,
+        'heading': heading,
+        'filter_form': filter_form,
+        'active_status': status,
+        'active_category': category,
+        'search_query': query,
+        'querystring': query_params.urlencode(),
+        'reset_url': request.path,
+    }
+
 @login_required
 def task_list(request):
-    task_queryset = models.Task.objects.filter(user=request.user).order_by('completed', '-created_at')
-    tasks = paginate_tasks(request, task_queryset)
-    return render(request, 'task/task_list.html', {'tasks': tasks})
+    context = build_task_list_context(request, scope=None, heading='All Tasks')
+    return render(request, 'task/task_list.html', context)
 
 @login_required
 def add_task(request):
@@ -90,13 +146,11 @@ def delete_task(request, task_id):
 
 @login_required
 def completed_tasks(request):
-    task_queryset = models.Task.objects.filter(user=request.user, completed=True).order_by('-created_at')
-    tasks = paginate_tasks(request, task_queryset)
-    return render(request, 'task/completed_task.html', {'tasks': tasks})
+    context = build_task_list_context(request, scope=TaskFilterForm.STATUS_COMPLETED, heading='Completed Tasks')
+    return render(request, 'task/task_list.html', context)
 
 
 @login_required
 def pending_tasks(request):
-    task_queryset = models.Task.objects.filter(user=request.user, completed=False).order_by('-created_at')
-    tasks = paginate_tasks(request, task_queryset)
-    return render(request, 'task/pending_task.html', {'tasks': tasks})
+    context = build_task_list_context(request, scope=TaskFilterForm.STATUS_PENDING, heading='Pending Tasks')
+    return render(request, 'task/task_list.html', context)
